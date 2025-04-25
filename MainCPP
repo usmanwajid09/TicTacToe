@@ -1,0 +1,151 @@
+#include <iostream>
+#include <limits>
+using namespace std;
+
+char board[3][3] = { {'1','2','3'}, {'4','5','6'}, {'7','8','9'} };
+char player = 'X', computer = 'O';
+
+void displayBoard() {
+    cout << "\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            cout << " " << board[i][j] << " ";
+            if (j < 2) cout << "|";
+        }
+        cout << "\n";
+        if (i < 2) cout << "---+---+---\n";
+    }
+    cout << "\n";
+}
+
+bool isMovesLeft() {
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            if (board[i][j] != player && board[i][j] != computer)
+                return true;
+    return false;
+}
+
+int evaluate() {
+    for (int row = 0; row < 3; row++) {
+        if (board[row][0] == board[row][1] && board[row][1] == board[row][2]) {
+            if (board[row][0] == computer) return +10;
+            else if (board[row][0] == player) return -10;
+        }
+    }
+    for (int col = 0; col < 3; col++) {
+        if (board[0][col] == board[1][col] && board[1][col] == board[2][col]) {
+            if (board[0][col] == computer) return +10;
+            else if (board[0][col] == player) return -10;
+        }
+    }
+    if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+        if (board[0][0] == computer) return +10;
+        else if (board[0][0] == player) return -10;
+    }
+    if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+        if (board[0][2] == computer) return +10;
+        else if (board[0][2] == player) return -10;
+    }
+    return 0;
+}
+
+int minimax(bool isMax) {
+    int score = evaluate();
+    if (score == 10 || score == -10) return score;
+    if (!isMovesLeft()) return 0;
+
+    if (isMax) {
+        int best = numeric_limits<int>::min();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] != player && board[i][j] != computer) {
+                    char backup = board[i][j];
+                    board[i][j] = computer;
+                    best = max(best, minimax(false));
+                    board[i][j] = backup;
+                }
+            }
+        }
+        return best;
+    } else {
+        int best = numeric_limits<int>::max();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] != player && board[i][j] != computer) {
+                    char backup = board[i][j];
+                    board[i][j] = player;
+                    best = min(best, minimax(true));
+                    board[i][j] = backup;
+                }
+            }
+        }
+        return best;
+    }
+}
+
+pair<int, int> findBestMove() {
+    int bestVal = numeric_limits<int>::min();
+    pair<int, int> bestMove = {-1, -1};
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (board[i][j] != player && board[i][j] != computer) {
+                char backup = board[i][j];
+                board[i][j] = computer;
+                int moveVal = minimax(false);
+                board[i][j] = backup;
+
+                if (moveVal > bestVal) {
+                    bestMove = {i, j};
+                    bestVal = moveVal;
+                }
+            }
+        }
+    }
+    return bestMove;
+}
+
+void playerMove() {
+    int move;
+    cout << "Enter your move (1-9): ";
+    cin >> move;
+    int row = (move - 1) / 3;
+    int col = (move - 1) % 3;
+    if (board[row][col] != player && board[row][col] != computer)
+        board[row][col] = player;
+    else {
+        cout << "Invalid move! Try again.\n";
+        playerMove();
+    }
+}
+
+int main() {
+    cout << "Tic Tac Toe (You vs AI)\n";
+    displayBoard();
+    while (true) {
+        playerMove();
+        displayBoard();
+        if (evaluate() == -10) {
+            cout << "You win!\n";
+            break;
+        }
+        if (!isMovesLeft()) {
+            cout << "It's a draw!\n";
+            break;
+        }
+
+        auto [i, j] = findBestMove();
+        board[i][j] = computer;
+        cout << "Computer chose: " << (3 * i + j + 1) << "\n";
+        displayBoard();
+        if (evaluate() == 10) {
+            cout << "Computer wins!\n";
+            break;
+        }
+        if (!isMovesLeft()) {
+            cout << "It's a draw!\n";
+            break;
+        }
+    }
+    return 0;
+}
