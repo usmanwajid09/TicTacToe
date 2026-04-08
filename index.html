@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe Nova</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-copy">
+        <p class="eyebrow">Game Studio Upgrade</p>
+        <h1>Tic Tac Toe Nova</h1>
+        <p class="intro">
+          A modern browser remake of the original repo: classic rules, smarter AI,
+          and a 3D arena-style interface that still stays simple to play.
+        </p>
+      </section>
+
+      <section class="game-layout" aria-label="Tic Tac Toe game">
+        <aside class="hud-panel">
+          <div class="panel-block">
+            <span class="panel-label">Mode</span>
+            <div class="toggle-group" role="group" aria-label="Game mode">
+              <button class="mode-button is-active" data-mode="ai" type="button">Vs AI</button>
+              <button class="mode-button" data-mode="pvp" type="button">2 Players</button>
+            </div>
+          </div>
+
+          <div class="panel-block stats-grid">
+            <div class="stat-card">
+              <span class="panel-label">Player X</span>
+              <strong id="score-x">0</strong>
+            </div>
+            <div class="stat-card">
+              <span class="panel-label">Player O</span>
+              <strong id="score-o">0</strong>
+            </div>
+            <div class="stat-card">
+              <span class="panel-label">Draws</span>
+              <strong id="score-draw">0</strong>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <span class="panel-label">Status</span>
+            <p id="status" class="status-text">Player X starts the round.</p>
+          </div>
+
+          <div class="panel-block actions">
+            <button id="restart-round" type="button">Restart Round</button>
+            <button id="reset-score" type="button">Reset Score</button>
+          </div>
+        </aside>
+
+        <section class="arena-panel">
+          <div class="arena-stage">
+            <div class="arena-glow" aria-hidden="true"></div>
+            <div id="board" class="board" role="grid" aria-label="Tic Tac Toe board"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+  </html>
